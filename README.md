@@ -85,4 +85,3 @@ Mejoras posibles:
 - Implementar y comparar más políticas (tiempo fijo, rotación ponderada, políticas adaptativas o aprendizaje por refuerzo).
 - Incluir visualización en tiempo real (gráficos o una UI) para monitorizar la evolución de colas.
 - Extender la topología a una red de intersecciones modelada como grafo para simular dependencias y rutas más realistas.
-- 
