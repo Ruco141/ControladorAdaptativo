@@ -1,87 +1,88 @@
 # ControladorAdaptativo
 
-## IntroducciÛn
+## Introducci√≥n
 
-`ControladorAdaptativo` es una simulaciÛn de control de tr·fico que modela varios sem·foros y flujos de vehÌculos. Su objetivo principal es comparar y evaluar polÌticas de selecciÛn de sem·foros para optimizar el paso de vehÌculos, reduciendo colas y mejorando mÈtricas de rendimiento en escenarios simulados. Resuelve el problema de decidir quÈ sem·foro debe abrirse en cada paso temporal atendiendo a mÈtricas como la longitud de cola y reglas de prioridad.
+`ControladorAdaptativo` es una simulaci√≥n de control de tr√°fico que modela varios sem√°foros y flujos de veh√≠culos. Su objetivo principal es comparar y evaluar pol√≠ticas de selecci√≥n de sem√°foros para optimizar el paso de veh√≠culos, reduciendo colas y mejorando m√©tricas de rendimiento en escenarios simulados. Resuelve el problema de decidir qu√© sem√°foro debe abrirse en cada paso temporal atendiendo a m√©tricas como la longitud de cola y reglas de prioridad.
 
-## DescripciÛn del Funcionamiento
+## Descripci√≥n del Funcionamiento
 
-El sistema est· compuesto por los siguientes mÛdulos principales:
+El sistema est√° compuesto por los siguientes m√≥dulos principales:
 
-- `Semaforo`: representa un sem·foro con su cola de vehÌculos (FIFO) y operaciones para encolar y desencolar vehÌculos.
-- `ArrivalGenerator`: genera llegadas de vehÌculos de forma estoc·stica y permite sembrar una cantidad inicial por sem·foro.
-- `Selector` (por ejemplo `MaxQueueSelector`): observa el estado de las colas y sugiere el sem·foro candidato a procesar seg˙n una polÌtica.
-- `Policy` (por ejemplo `CompareWithMaxPolicy`): decide si se procesa el sem·foro seleccionado (permitir salidas) en funciÛn del selector y reglas adicionales.
-- `TrafficRunner`: orquesta la simulaciÛn, ejecuta el bucle temporal (ticks), aplica la polÌtica, procesa las salidas en los intervalos configurados y recopila estadÌsticas.
+- `Semaforo`: representa un sem√°foro con su cola de veh√≠culos (FIFO) y operaciones para encolar y desencolar veh√≠culos.
+- `ArrivalGenerator`: genera llegadas de veh√≠culos de forma estoc√°stica y permite sembrar una cantidad inicial por sem√°foro.
+- `Selector` (por ejemplo `MaxQueueSelector`): observa el estado de las colas y sugiere el sem√°foro candidato a procesar seg√∫n una pol√≠tica.
+- `Policy` (por ejemplo `CompareWithMaxPolicy`): decide si se procesa el sem√°foro seleccionado (permitir salidas) en funci√≥n del selector y reglas adicionales.
+- `TrafficRunner`: orquesta la simulaci√≥n, ejecuta el bucle temporal (ticks), aplica la pol√≠tica, procesa las salidas en los intervalos configurados y recopila estad√≠sticas.
 
-Flujo general de la simulaciÛn:
+Flujo general de la simulaci√≥n:
 
 1. Se crean N instancias de `Semaforo`.
-2. `ArrivalGenerator` siembra una cantidad inicial de vehÌculos por sem·foro y genera llegadas durante la simulaciÛn.
-3. En cada tick, `Selector` eval˙a el estado de las colas y propone un candidato.
-4. `Policy` aplica la lÛgica de decisiÛn sobre si permitir salidas en el sem·foro candidato.
-5. `TrafficRunner` procesa las salidas en los intervalos definidos y actualiza las mÈtricas.
-6. Al finalizar la duraciÛn configurada se devuelve un resumen con llegadas, salidas y colas finales por sem·foro.
+2. `ArrivalGenerator` siembra una cantidad inicial de veh√≠culos por sem√°foro y genera llegadas durante la simulaci√≥n.
+3. En cada tick, `Selector` eval√∫a el estado de las colas y propone un candidato.
+4. `Policy` aplica la l√≥gica de decisi√≥n sobre si permitir salidas en el sem√°foro candidato.
+5. `TrafficRunner` procesa las salidas en los intervalos definidos y actualiza las m√©tricas.
+6. Al finalizar la duraci√≥n configurada se devuelve un resumen con llegadas, salidas y colas finales por sem√°foro.
 
-## ImplementaciÛn de Estructuras de Datos
+## Implementaci√≥n de Estructuras de Datos
 
-Estructuras utilizadas y justificaciÛn:
+Estructuras utilizadas y justificaci√≥n:
 
-- Arreglos (`Semaforo[]`): se usan para almacenar la colecciÛn de sem·foros cuando su n˙mero es fijo al iniciar la simulaciÛn. Proporcionan acceso por Ìndice de forma r·pida y simple.
-- Colas (`Queue<T>` o una cola propia dentro de `Semaforo`): modelan el orden FIFO de los vehÌculos en cada sem·foro, que es el comportamiento natural de llegada/salida.
-- Arrays de contadores (`int[]`): para almacenar estadÌsticas por sem·foro (`ArrivalsPerSemaforo`, `DeparturesPerSemaforo`, `FinalQueue`) se usan arrays Ìndices por sem·foro.
-- Tipos primitivos (enteros, TimeSpan): para tiempos, contadores y configuraciones de la simulaciÛn.
+- Arreglos (`Semaforo[]`): se usan para almacenar la colecci√≥n de sem√°foros cuando su n√∫mero es fijo al iniciar la simulaci√≥n. Proporcionan acceso por √≠ndice de forma r√°pida y simple.
+- Colas (`Queue<T>` o una cola propia dentro de `Semaforo`): modelan el orden FIFO de los veh√≠culos en cada sem√°foro, que es el comportamiento natural de llegada/salida.
+- Arrays de contadores (`int[]`): para almacenar estad√≠sticas por sem√°foro (`ArrivalsPerSemaforo`, `DeparturesPerSemaforo`, `FinalQueue`) se usan arrays √≠ndices por sem√°foro.
+- Tipos primitivos (enteros, TimeSpan): para tiempos, contadores y configuraciones de la simulaci√≥n.
 
-JustificaciÛn: la lÛgica actual requiere operaciones de encolar/desencolar y accesos por Ìndice; por tanto las colas y arreglos son las estructuras m·s adecuadas. No se emplean ·rboles ni grafos en la implementaciÛn base; si se modelara una red de intersecciones con dependencias avanzadas, un grafo serÌa la estructura adecuada.
+Justificaci√≥n: la l√≥gica actual requiere operaciones de encolar/desencolar y accesos por √≠ndice; por tanto las colas y arreglos son las estructuras m√°s adecuadas. No se emplean √°rboles ni grafos en la implementaci√≥n base; si se modelara una red de intersecciones con dependencias avanzadas, un grafo ser√≠a la estructura adecuada.
 
-## Capturas de CÛdigo y Resultados
+## Capturas de C√≥digo y Resultados
 
-Fragmento representativo de `Program.cs` (configuraciÛn y ejecuciÛn de la simulaciÛn):
+Fragmento representativo de `Program.cs` (configuraci√≥n y ejecuci√≥n de la simulaci√≥n):
 
 ```
-// Crear sem·foros
+// Crear sem√°foros
 var semaforos = new Semaforo[N];
 for (int i = 0; i < N; i++) {
     semaforos[i] = new Semaforo();
 }
 
-// Sembrar vehÌculos inicialmente
+// Sembrar veh√≠culos inicialmente
 var generator = new ArrivalGenerator();
 generator.Sow(semaforos, siembraInicial);
 
-// Configurar selector y polÌtica
+// Configurar selector y pol√≠tica
 var selector = new MaxQueueSelector(semaforos);
 var policy = new CompareWithMaxPolicy(umbral);
 
-// Ejecutar simulaciÛn
+// Ejecutar simulaci√≥n
 var runner = new TrafficRunner(semaforos, generator, selector, policy);
 runner.Run(ticks);
 ```
 
 Resultados obtenidos (valores simulados):
 
-- Sem·foro 1:  Llegadas: 150 | Salidas: 120 | Cola Final: 30
-- Sem·foro 2:  Llegadas: 100 | Salidas: 80  | Cola Final: 20
-- Sem·foro 3:  Llegadas: 200 | Salidas: 180 | Cola Final: 50
+- Sem√°foro 1:  Llegadas: 150 | Salidas: 120 | Cola Final: 30
+- Sem√°foro 2:  Llegadas: 100 | Salidas: 80  | Cola Final: 20
+- Sem√°foro 3:  Llegadas: 200 | Salidas: 180 | Cola Final: 50
 
 Ejemplo de salida en consola (valores simulados):
 
 ```
-Sem·foro 1:  Llegadas: 150 | Salidas: 120 | Cola Final: 30
-Sem·foro 2:  Llegadas: 100 | Salidas: 80  | Cola Final: 20
-Sem·foro 3:  Llegadas: 200 | Salidas: 180 | Cola Final: 50
+Sem√°foro 1:  Llegadas: 150 | Salidas: 120 | Cola Final: 30
+Sem√°foro 2:  Llegadas: 100 | Salidas: 80  | Cola Final: 20
+Sem√°foro 3:  Llegadas: 200 | Salidas: 180 | Cola Final: 50
 ```
 
-Nota: los n˙meros varÌan entre ejecuciones por la naturaleza estoc·stica del generador de llegadas.
+Nota: los n√∫meros var√≠an entre ejecuciones por la naturaleza estoc√°stica del generador de llegadas.
 
 ## Conclusiones
 
 Aprendizajes y retos:
-- La simulaciÛn permite comparar polÌticas de control usando mÈtricas sencillas (longitud de cola, tasa de salida) y validar hipÛtesis sobre la eficiencia de cada polÌtica.
-- Coordinar generaciÛn de llegadas (procesos asÌncronos) con un bucle de ticks determinista fue un reto para mantener coherencia en la simulaciÛn y facilitar reproducibilidad.
+- La simulaci√≥n permite comparar pol√≠ticas de control usando m√©tricas sencillas (longitud de cola, tasa de salida) y validar hip√≥tesis sobre la eficiencia de cada pol√≠tica.
+- Coordinar generaci√≥n de llegadas (procesos as√≠ncronos) con un bucle de ticks determinista fue un reto para mantener coherencia en la simulaci√≥n y facilitar reproducibilidad.
 
 Mejoras posibles:
-- AÒadir configuraciÛn externa (JSON o par·metros de lÌnea de comandos) para experimentar m·s f·cilmente con par·metros.
-- Implementar y comparar m·s polÌticas (tiempo fijo, rotaciÛn ponderada, polÌticas adaptativas o aprendizaje por refuerzo).
-- Incluir visualizaciÛn en tiempo real (gr·ficos o una UI) para monitorizar la evoluciÛn de colas.
-- Extender la topologÌa a una red de intersecciones modelada como grafo para simular dependencias y rutas m·s realistas.
+- A√±adir configuraci√≥n externa (JSON o par√°metros de l√≠nea de comandos) para experimentar m√°s f√°cilmente con par√°metros.
+- Implementar y comparar m√°s pol√≠ticas (tiempo fijo, rotaci√≥n ponderada, pol√≠ticas adaptativas o aprendizaje por refuerzo).
+- Incluir visualizaci√≥n en tiempo real (gr√°ficos o una UI) para monitorizar la evoluci√≥n de colas.
+- Extender la topolog√≠a a una red de intersecciones modelada como grafo para simular dependencias y rutas m√°s realistas.
+- 
